@@ -1,24 +1,41 @@
 "use client";
+import {useState} from "react";
 
 export default function SignupForm() {
+  const [error, setError] = useState(null);
+
   async function handleSubmit(formData) {
-    const res = await fetch ("/api/signup",
+    try {
+      const res = await fetch ("/api/signup",
     {
       method: "post",
       body: formData
-    })
+    });
     const jsonResponse = await res.json();
     console.log(jsonResponse);
+   if(jsonResponse.error){
+    setError(jsonResponse.error)
+   }
+  } catch (error) {
+    setError("an error occured")
   }
+}
   return (
     <section className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 rounded shadow-2xl p-4">
       <h1 className="text-lg font-bold mb-4">Create Account</h1>
+      {
+      error &&
+      <div className = "px-4 py-2 border rounded mb-3 text-red-500 bg-red-200">
+        {error}
+      </div>
+
+      }
       <form action={handleSubmit} className="flex flex-col gap-1">
         <label htmlFor="name">Full Name</label>
         <input
           type="text"
           id="name"
-          name="name"
+          name="username"
           className="px-4 py-2 border rounded mb-3"
           placeholder="enter full name here"
         />
